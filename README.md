@@ -933,48 +933,50 @@ https://github.com/sumanthvardhinedi/urja-meter-api
 
 ### What assumptions did you make?
 
-I assumed that the JSON endpoints observed through the portal's network activity were the appropriate interfaces to wrap.
+I assumed that the JSON endpoints I observed through the portal's network activity were the appropriate interfaces to wrap.
 
-I also assumed that the observed authentication and response formats would remain stable during the assignment evaluation.
+I also assumed that the observed SvelteKit authentication flow would remain compatible during evaluation.
+
+I assumed that meter IDs returned by the search endpoint could be used with the energy and geo endpoints, and that the observed timestamp and numeric formats would remain consistent.
 
 ### What was the hardest part?
 
-The most challenging part was understanding the portal's authentication behavior.
+The hardest part for me was understanding the portal's authentication behavior.
 
-A successful login returns HTTP 200 even though the response represents a redirect, while failed authentication can also return HTTP 200 with a failure object.
+I initially noticed that a successful login returned HTTP 200, even though the response represented a redirect. Failed authentication could also return HTTP 200 with a failure object.
 
-Therefore, checking only the HTTP status code would be incorrect.
+I therefore had to inspect the actual response body instead of relying only on the HTTP status code.
 
-Network inspection and reproducing the browser requests were important for understanding this behavior.
+Using the browser's network tools and reproducing the requests independently helped me understand the authentication flow and the upstream API behavior.
 
 ### If you had another day, what would you improve?
 
-I would add:
+If I had another day, I would improve the project by adding:
 
-- Persistent storage
-- Caching
+- Persistent storage for meter and consumption data
+- Caching to reduce repeated upstream requests
 - More detailed upstream error handling
-- Structured logging
-- Metrics
-- API authentication
-- More complete meter hierarchy support
-- Stronger integration testing
+- Structured logging and metrics
+- Authentication and authorization for API consumers
+- Complete meter/network hierarchy support
+- Stronger integration and failure-path testing
+- Retry policies with exponential backoff and circuit breaking
 
 ### What mistake did you make?
 
-An early implementation treated HTTP 200 as sufficient evidence that login had succeeded.
+One mistake I made was initially treating HTTP 200 as sufficient evidence that the portal login had succeeded.
 
 After inspecting the actual response body, I changed the implementation to check the SvelteKit response type and explicitly detect authentication failure.
 
-Another debugging mistake was printing sensitive authentication/session information during development. That output was removed, and credentials and session tokens are not included in the repository.
+I also temporarily printed sensitive authentication/session information while debugging. I removed that debug output and ensured that credentials and session tokens are not included in the repository.
 
 ### What would you critique about your implementation?
 
-The implementation is intentionally scoped to the assignment rather than being a complete production platform.
+I would critique my implementation as being intentionally scoped to the assignment rather than being a complete production platform.
 
-The main areas I would improve are persistence, caching, observability, consumer authentication, and more granular upstream error handling.
+If I were taking this further, I would improve persistence, caching, observability, consumer authentication, and more granular upstream error handling.
 
-The current architecture nevertheless keeps the legacy portal integration isolated and provides a clean REST contract for the required operations.
+However, I think the current architecture successfully isolates the legacy portal integration and provides a clean REST contract for the required operations.
 
 ---
 
